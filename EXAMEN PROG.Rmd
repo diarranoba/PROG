@@ -10,12 +10,54 @@ library(dplyr)
 library(lubridate)
 ```
 ```{r}
-# Définir le répertoire où se trouvent vos fichiers CSV
-# Lister tous les fichiers CSV dans le répertoire
-fichiers_csv <- list.files(path = "C:/Users/diarr/Downloads/exam_data/exam_data/", pattern = ".csv", full.names = TRUE) %>% 
-  lapply(read.csv) %>% 
-  bind_rows()
-fichiers_csv
+# Écrire une fonction dans R qui lit les 60 fichiers csv avec les données de ventes 
+#du FXD JET 100 entre 2020-01-01 et 2024-12-31
+#Assurez vous que cette fonction 
+#peut être réutilisée pour lire les fichiers csv en utilisant des dates différentes que #celles spécifiées ci-dessus comme 2020-01-01 et 2022-12-31 ou similaire
+dossier<-"C:/Users/diarr/Downloads/exam_data/exam_data/"
+lire_ventes <- function(dossier, date_debut, date_fin) {
+  fichiers_csv <<- list.files(path = dossier, pattern = ".csv", full.names = TRUE) %>% 
+    lapply(read.csv) %>% 
+    bind_rows()
+  
+  fichiers_csv <- fichiers_csv %>%
+    mutate(date = as.Date(date)) %>%  # Assurez-vous que la colonne 'date' existe
+    filter(between(date, as.Date(date_debut), as.Date(date_fin)))
+  
+  return(fichiers_csv)
+}
+
+# Exemple d'appel de la fonction avec des dates spécifiques
+donnees_filtrees <- lire_ventes("C:/Users/diarr/Downloads/exam_data/exam_data/", "2020-01-01", "2022-12-31")
+donnees_filtrees<-lire_ventes("C:/Users/diarr/Downloads/exam_data/exam_data/","2020-01-01", "2024-12-31")
+```
+
+
+```{r}
+#Visualiser les données de ventes avec ggplot2 et choisissez la visualisation qui 
+#montre le mieux l’évolution des ventes entre 2020-01-01 et 2024-12-31
+library(tidyverse)
+library(ggplot2)
+ggplot(donnees_filtrees, aes(x = date, y = nb_de_ventes)) +
+  geom_point(color = "blue", size= 1) +
+  geom_line(color="blue", linewidth=1)+
+  labs(
+    title = "Évolution des ventes (2020-2024)",
+    x = "Date",
+    y = "Ventes"
+  ) +
+  scale_x_date(
+    date_labels = "%b %Y",
+    date_breaks = "3 months" ,
+    limits = as.Date(c("2020-01-01","2024-12-31"))
+  ) + 
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
 ```
 ```{r}
 
