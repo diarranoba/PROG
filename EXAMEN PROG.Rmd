@@ -1,0 +1,22 @@
+---
+title: "EXAMEN"
+author: "Diarra NOBA"
+date: "2024-12-18"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(lubridate)
+```
+```{r}
+# Définir le répertoire où se trouvent vos fichiers CSV
+# Lister tous les fichiers CSV dans le répertoire
+fichiers_csv <- list.files(path = "C:/Users/diarr/Downloads/exam_data/exam_data/", pattern = ".csv", full.names = TRUE) %>% 
+  lapply(read.csv) %>% 
+  bind_rows()
+fichiers_csv
+```
+```{r}
+
+```
